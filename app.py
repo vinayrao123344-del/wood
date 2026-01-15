@@ -26,14 +26,22 @@ def init_db_internal():
     # Internal function to create the database file
     # We use a temporary connection just for creation
     conn = sqlite3.connect(DB_PATH)
-    with open('schema.sql') as f:
-        conn.executescript(f.read())
     
-    # Add initial labor cost
-    conn.execute('INSERT INTO labor_cost (amount) VALUES (50)')
+    # Use absolute path for schema.sql to avoid FileNotFoundError on Vercel
+    schema_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'schema.sql')
     
-    conn.commit()
-    conn.close()
+    try:
+        with open(schema_path) as f:
+            conn.executescript(f.read())
+        
+        # Add initial labor cost
+        conn.execute('INSERT INTO labor_cost (amount) VALUES (50)')
+        
+        conn.commit()
+    except Exception as e:
+        print(f"Error initializing DB: {e}")
+    finally:
+        conn.close()
 
 def init_db():
     init_db_internal()
