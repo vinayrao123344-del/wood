@@ -20,7 +20,8 @@ CREATE TABLE IF NOT EXISTS products (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     image_url TEXT,
-    description TEXT
+    description TEXT,
+    base_price REAL DEFAULT 0
 );
 
 -- Insert initial labor cost if not exists
