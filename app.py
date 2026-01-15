@@ -4,39 +4,28 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from functools import wraps
 
 app = Flask(__name__)
+app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here'
 
-# Determine database path
-# Vercel file system is read-only, so we must use /tmp for SQLite
-if os.environ.get('VERCEL'):
-    DB_PATH = '/tmp/wood_manufacturing.db'
-else:
-    DB_PATH = 'wood_manufacturing.db'
+# Standard database path for Render (persistent disk)
+DB_PATH = 'wood_manufacturing.db'
 
 def get_db_connection():
-    # Auto-initialize DB if it doesn't exist (handled here for Vercel)
     if not os.path.exists(DB_PATH):
         init_db_internal()
-        
     conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
 def init_db_internal():
-    # Internal function to create the database file
-    # We use a temporary connection just for creation
     conn = sqlite3.connect(DB_PATH)
-    
-    # Use absolute path for schema.sql to avoid FileNotFoundError on Vercel
+    # Use absolute path for schema.sql to be safe
     schema_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'schema.sql')
-    
     try:
         with open(schema_path) as f:
             conn.executescript(f.read())
-        
-        # Add initial labor cost
-        conn.execute('INSERT INTO labor_cost (amount) VALUES (50)')
-        
+        # Add initial labor cost if creating fresh
+        conn.execute('INSERT OR IGNORE INTO labor_cost (id, amount) VALUES (1, 50)')
         conn.commit()
     except Exception as e:
         print(f"Error initializing DB: {e}")

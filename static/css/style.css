@@ -1,6 +1,7 @@
-/* Custom styles if any, most handled by Tailwind */
-html {
+/* Base Styles using Tailwind, adding custom refinements */
+body {
     scroll-behavior: smooth;
+    font-family: 'Inter', sans-serif;
 }
 
 /* Glassmorphism utility */
@@ -8,4 +9,83 @@ html {
     background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Smooth Transitions */
+a,
+button,
+input,
+select,
+textarea,
+.card-transition {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Card Hover Effects */
+.hover-scale {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-scale:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Form Elements Focus */
+input:focus,
+select:focus,
+textarea:focus {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Fade In Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* Wood Colors */
+.text-wood-600 {
+    color: #8B4513;
+}
+
+.text-wood-800 {
+    color: #5D2906;
+}
+
+.bg-wood-50 {
+    background-color: #FDF8F6;
+}
+
+.bg-wood-100 {
+    background-color: #F4E4D7;
+}
+
+.bg-wood-600 {
+    background-color: #8B4513;
+}
+
+.bg-wood-700 {
+    background-color: #723A0F;
+}
+
+.border-wood-500 {
+    border-color: #A0522D;
+}
+
+.focus\:ring-wood-500:focus {
+    --tw-ring-color: #A0522D;
 }
