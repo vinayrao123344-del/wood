@@ -4,21 +4,40 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from functools import wraps
 
 app = Flask(__name__)
-app.secret_key = 'super_secret_key_change_this_in_production'
-DB_NAME = 'wood_manufacturing.db'
+app.config['SECRET_KEY'] = 'your-secret-key-here'
+
+# Determine database path
+# Vercel file system is read-only, so we must use /tmp for SQLite
+if os.environ.get('VERCEL'):
+    DB_PATH = '/tmp/wood_manufacturing.db'
+else:
+    DB_PATH = 'wood_manufacturing.db'
 
 def get_db_connection():
-    conn = sqlite3.connect(DB_NAME)
+    # Auto-initialize DB if it doesn't exist (handled here for Vercel)
+    if not os.path.exists(DB_PATH):
+        init_db_internal()
+        
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     return conn
 
+def init_db_internal():
+    # Internal function to create the database file
+    # We use a temporary connection just for creation
+    conn = sqlite3.connect(DB_PATH)
+    with open('schema.sql') as f:
+        conn.executescript(f.read())
+    
+    # Add initial labor cost
+    conn.execute('INSERT INTO labor_cost (amount) VALUES (50)')
+    
+    conn.commit()
+    conn.close()
+
 def init_db():
-    if not os.path.exists(DB_NAME):
-        conn = get_db_connection()
-        with open('schema.sql') as f:
-            conn.executescript(f.read())
-        conn.close()
-        print("Database initialized.")
+    init_db_internal()
+    print('Initialized the database.')
 
 # --- Helpers ---
 def login_required(f):
