@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="relative bg-white overflow-hidden">
+    <div class="max-w-7xl mx-auto">
+        <div class="relative z-10 pb-8 bg-white sm:pb-16 md:pb-20 lg:max-w-2xl lg:w-full lg:pb-28 xl:pb-32">
+            <main class="mt-10 mx-auto max-w-7xl px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
+                <div class="sm:text-center lg:text-left">
+                    <h1 class="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
+                        <span class="block xl:inline">Crafting Excellence</span>
+                        <span class="block text-wood-600">in Every Grain</span>
+                    </h1>
+                    <p
+                        class="mt-3 text-base text-gray-500 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
+                        Premium wood solutions for your home. From robust doors to elegant windows, calculate your costs
+                        instantly.
+                    </p>
+                    <div class="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
+                        <div class="rounded-md shadow">
+                            <a href="#products"
+                                class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-wood-600 hover:bg-wood-700 md:py-4 md:text-lg md:px-10">
+                                View Products
+                            </a>
+                        </div>
+                        <div class="mt-3 sm:mt-0 sm:ml-3">
+                            <a href="#calculator"
+                                class="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-wood-700 bg-wood-100 hover:bg-wood-200 md:py-4 md:text-lg md:px-10">
+                                Calculate Price
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    <div class="lg:absolute lg:inset-y-0 lg:right-0 lg:w-1/2">
+        <img class="h-56 w-full object-cover sm:h-72 md:h-96 lg:w-full lg:h-full"
+            src="https://images.unsplash.com/photo-1541123437800-1bb1317badc2?ixlib=rb-4.0.3&auto=format&fit=crop&w=1500&q=80"
+            alt="Wood working">
+    </div>
+</div>
+
+<!-- Products Section -->
+<div id="products" class="bg-wood-50 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <h2 class="text-base text-wood-600 font-semibold tracking-wide uppercase">Our Collection</h2>
+            <p class="mt-2 text-3xl leading-8 font-extrabold tracking-tight text-gray-900 sm:text-4xl">Available
+                Products</p>
+            <p class="mt-4 max-w-2xl text-xl text-gray-500 lg:mx-auto">Browse our selection of high-quality wood
+                products designed to last.</p>
+        </div>
+
+        <div class="mt-10 grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {% for product in products %}
+            <div
+                class="flex flex-col rounded-lg shadow-lg overflow-hidden bg-white transition hover:shadow-xl transform hover:-translate-y-1">
+                <div class="flex-shrink-0 bg-gray-100">
+                    <img class="h-64 w-full object-contain p-2" src="{{ product.image_url }}" alt="{{ product.name }}">
+                </div>
+                <div class="flex-1 bg-white p-6 flex flex-col justify-between relative">
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start">
+                            <p class="text-xl font-semibold text-gray-900">{{ product.name }}</p>
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-wood-100 text-wood-800">
+                                ₹{{ product.base_price }}
+                            </span>
+                        </div>
+                        <p class="mt-3 text-base text-gray-500">{{ product.description }}</p>
+                    </div>
+                    <a href="{{ url_for('product_detail', product_id=product.id) }}"
+                        class="mt-4 w-full flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-wood-600 hover:bg-wood-700">
+                        Calculate & Buy
+                    </a>
+                </div>
+            </div>
+            {% else %}
+            <div class="col-span-3 text-center text-gray-500 py-8">
+                No products added yet.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<!-- Calculator Section -->
+<div id="calculator" class="py-16 bg-white overflow-hidden">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-wood-900 rounded-2xl shadow-xl overflow-hidden md:flex">
+            <div class="p-8 md:w-1/2 text-white">
+                <h2 class="text-3xl font-extrabold mb-4">Price Estimator</h2>
+                <p class="text-wood-200 mb-6">Calculate the estimated cost for your custom wood project instantly. Fill
+                    in the dimensions and choose your preferred wood type.</p>
+
+                <div class="space-y-4">
+                    <div class="flex items-center text-wood-200">
+                        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Transparent Pricing</span>
+                    </div>
+                    <div class="flex items-center text-wood-200">
+                        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span>Instant Calculation</span>
+                    </div>
+                    <div class="flex items-center text-wood-200">
+                        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4">
+                            </path>
+                        </svg>
+                        <span>Labor Included</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-8 md:w-1/2 bg-gray-50">
+                <form id="calculatorForm" class="space-y-6">
+                    <div>
+                        <label for="product_type" class="block text-sm font-medium text-gray-700">Product Type</label>
+                        <select id="product_type" name="product_type"
+                            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-wood-500 focus:border-wood-500 sm:text-sm rounded-md shadow-sm border">
+                            <option value="door">Door</option>
+                            <option value="window">Window</option>
+                            <option value="custom">Custom Item</option>
+                        </select>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label for="width" class="block text-sm font-medium text-gray-700">Width (ft)</label>
+                            <input type="number" name="width" id="width" step="0.1" required
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-wood-500 focus:border-wood-500 sm:text-sm">
+                        </div>
+                        <div>
+                            <label for="height" class="block text-sm font-medium text-gray-700">Height (ft)</label>
+                            <input type="number" name="height" id="height" step="0.1" required
+                                class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-wood-500 focus:border-wood-500 sm:text-sm">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label for="wood_type" class="block text-sm font-medium text-gray-700">Wood Type</label>
+                        <select id="wood_type" name="wood_type" required
+                            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-wood-500 focus:border-wood-500 sm:text-sm rounded-md shadow-sm border">
+                            <option value="">Select Wood Type</option>
+                            {% for type in wood_types %}
+                            <option value="{{ type.id }}">{{ type.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="wood_subtype" class="block text-sm font-medium text-gray-700">Sub-type</label>
+                        <select id="wood_subtype" name="wood_subtype" required disabled
+                            class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-wood-500 focus:border-wood-500 sm:text-sm rounded-md shadow-sm border bg-gray-100">
+                            <option value="">First Select Wood Type</option>
+                        </select>
+                    </div>
+
+                    <div class="pt-4">
+                        <button type="submit"
+                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-wood-600 hover:bg-wood-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wood-500 transition-colors">
+                            Calculate Price
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Result Box -->
+                <div id="resultBox" class="hidden mt-6 bg-white p-4 rounded-lg border border-wood-200 shadow-inner">
+                    <h3 class="text-lg font-medium text-gray-900 border-b border-gray-200 pb-2 mb-3">Cost Breakdown</h3>
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Total Area:</span>
+                            <span class="font-medium" id="res_area">0 sqft</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Wood Rate:</span>
+                            <span class="font-medium" id="res_rate">₹0 /sqft</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Wood Cost:</span>
+                            <span class="font-medium" id="res_wood_cost">₹0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-500">Labor Cost:</span>
+                            <span class="font-medium" id="res_labor_cost">₹{{ labor_cost }}</span>
+                        </div>
+                        <div class="pt-3 border-t border-gray-200 flex justify-between items-center">
+                            <span class="text-base font-bold text-gray-900">Total Cost:</span>
+                            <span class="text-2xl font-bold text-wood-600" id="res_total">₹0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

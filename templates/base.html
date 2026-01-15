@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Woodworks</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Outfit', 'sans-serif'],
+                    },
+                    colors: {
+                        wood: {
+                            50: '#fbf7f3',
+                            100: '#f5ebe3',
+                            200: '#ead7c7',
+                            300: '#debfa3',
+                            400: '#cf9c75',
+                            500: '#c38052',
+                            600: '#b66742',
+                            700: '#975039',
+                            800: '#7d4334',
+                            900: '#64382d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-wood-50 text-gray-800 font-sans min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="bg-white/80 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <span class="text-2xl font-bold text-wood-800 tracking-tight">🪵 WoodCraft</span>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                    <a href="{{ url_for('index') }}" class="border-transparent text-gray-500 hover:border-wood-500 hover:text-wood-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Home</a>
+                    <a href="#calculator" class="border-transparent text-gray-500 hover:border-wood-500 hover:text-wood-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Calculator</a>
+                    {% if session.get('admin_logged_in') %}
+                        <a href="{{ url_for('admin_dashboard') }}" class="border-transparent text-wood-600 hover:text-wood-800 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Admin Dashboard</a>
+                        <a href="{{ url_for('admin_logout') }}" class="border-transparent text-red-500 hover:text-red-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Logout</a>
+                    {% else %}
+                        <a href="{{ url_for('admin_login') }}" class="border-transparent text-gray-500 hover:border-wood-500 hover:text-wood-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Admin Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="max-w-7xl mx-auto px-4 mt-4">
+                {% for message in messages %}
+                    <div class="bg-wood-100 border border-wood-400 text-wood-700 px-4 py-3 rounded relative" role="alert">
+                        <span class="block sm:inline">{{ message }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <main class="flex-grow">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-wood-900 text-wood-200 mt-12">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-sm">&copy; 2026 WoodCraft Manufacturing. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

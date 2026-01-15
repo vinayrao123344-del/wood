@@ -1,0 +1,11 @@
+/* Custom styles if any, most handled by Tailwind */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Glassmorphism utility */
+.glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}

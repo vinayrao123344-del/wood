@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="bg-white">
+    <div class="max-w-2xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:max-w-7xl lg:px-8">
+        <div class="mb-6">
+            <a href="{{ url_for('index') }}"
+                class="inline-flex items-center text-sm font-medium text-wood-600 hover:text-wood-800 transition-colors">
+                <svg class="mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+                Back to Home
+            </a>
+        </div>
+        <div class="lg:grid lg:grid-cols-2 lg:gap-x-8 lg:items-start">
+            <!-- Image gallery -->
+            <div class="flex flex-col-reverse">
+                <div
+                    class="w-full aspect-w-1 aspect-h-1 bg-gray-100 rounded-lg overflow-hidden sm:aspect-w-2 sm:aspect-h-3">
+                    <img src="{{ product.image_url }}" alt="{{ product.name }}"
+                        class="w-full h-full object-contain object-center">
+                </div>
+            </div>
+
+            <!-- Product info -->
+            <div class="mt-10 px-4 sm:px-0 sm:mt-16 lg:mt-0">
+                <h1 class="text-3xl font-extrabold tracking-tight text-gray-900">{{ product.name }}</h1>
+
+                <div class="mt-3">
+                    <h2 class="sr-only">Product information</h2>
+                    <p class="text-3xl text-gray-900">Base Price: <span class="text-wood-600">₹{{ product.base_price
+                            }}</span></p>
+                </div>
+
+                <div class="mt-6">
+                    <h3 class="sr-only">Description</h3>
+                    <div class="text-base text-gray-700 space-y-6">
+                        <p>{{ product.description }}</p>
+                    </div>
+                </div>
+
+                <!-- Calculator for this specific product -->
+                <div class="mt-10 border-t border-gray-200 pt-10">
+                    <h3 class="text-lg font-medium text-gray-900">Calculate Custom Cost</h3>
+
+                    <form id="productCalcForm" class="mt-4 grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+                        <input type="hidden" id="prod_id" value="{{ product.id }}">
+
+                        <div>
+                            <label for="width" class="block text-sm font-medium text-gray-700">Width (ft)</label>
+                            <div class="mt-1">
+                                <input type="number" id="prod_width" name="width" step="0.1" required
+                                    class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-wood-500 focus:border-wood-500 sm:text-sm border p-2">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="height" class="block text-sm font-medium text-gray-700">Height (ft)</label>
+                            <div class="mt-1">
+                                <input type="number" id="prod_height" name="height" step="0.1" required
+                                    class="block w-full border-gray-300 rounded-md shadow-sm focus:ring-wood-500 focus:border-wood-500 sm:text-sm border p-2">
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="wood_type" class="block text-sm font-medium text-gray-700">Wood Type</label>
+                            <select id="prod_wood_type" required
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-wood-500 focus:border-wood-500 sm:text-sm rounded-md shadow-sm border">
+                                <option value="">Select Wood Type</option>
+                                {% for type in wood_types %}
+                                <option value="{{ type.id }}">{{ type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="wood_subtype" class="block text-sm font-medium text-gray-700">Sub-type</label>
+                            <select id="prod_wood_subtype" required disabled
+                                class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-wood-500 focus:border-wood-500 sm:text-sm rounded-md shadow-sm border bg-gray-100">
+                                <option value="">First Select Wood Type</option>
+                            </select>
+                        </div>
+
+                        <button type="submit"
+                            class="sm:col-span-2 w-full bg-wood-600 border border-transparent rounded-md py-3 px-8 flex items-center justify-center text-base font-medium text-white hover:bg-wood-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wood-500">
+                            Calculate Total
+                        </button>
+                    </form>
+
+                    <!-- Result -->
+                    <div id="prodResultBox" class="hidden mt-6 bg-gray-50 p-4 rounded-lg border border-gray-200">
+                        <dl class="space-y-4">
+                            <div class="flex justify-between">
+                                <dt class="text-sm text-gray-500">Base Product Cost</dt>
+                                <dd class="text-sm font-medium text-gray-900" id="pr_base">₹{{ product.base_price }}
+                                </dd>
+                            </div>
+                            <div class="flex justify-between">
+                                <dt class="text-sm text-gray-500">Material Cost (Area x Rate)</dt>
+                                <dd class="text-sm font-medium text-gray-900" id="pr_wood">₹0</dd>
+                            </div>
+                            <div class="flex justify-between">
+                                <dt class="text-sm text-gray-500">Labor Cost</dt>
+                                <dd class="text-sm font-medium text-gray-900" id="pr_labor">₹{{ labor_cost }}</dd>
+                            </div>
+                            <div class="flex justify-between border-t border-gray-200 pt-4">
+                                <dt class="text-base font-bold text-gray-900">Total Price</dt>
+                                <dd class="text-2xl font-bold text-wood-600" id="pr_total">₹0</dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Embedded script for this specific page logic
+    document.addEventListener('DOMContentLoaded', () => {
+        const prodWoodSelect = document.getElementById('prod_wood_type');
+        const prodSubtypeSelect = document.getElementById('prod_wood_subtype');
+
+        // Similar loading logic as simplified for main page, but specific IDs
+        if (prodWoodSelect) {
+            prodWoodSelect.addEventListener('change', async (e) => {
+                const typeId = e.target.value;
+                prodSubtypeSelect.innerHTML = '<option value="">Loading...</option>';
+                prodSubtypeSelect.disabled = true;
+
+                if (!typeId) {
+                    prodSubtypeSelect.innerHTML = '<option value="">First Select Wood Type</option>';
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/get_subtypes/${typeId}`);
+                    const subtypes = await response.json();
+
+                    prodSubtypeSelect.innerHTML = '<option value="">Select Sub-type</option>';
+                    subtypes.forEach(subtype => {
+                        const option = document.createElement('option');
+                        option.value = subtype.id;
+                        option.textContent = `${subtype.name} (₹${subtype.price_per_sqft}/sqft)`;
+                        prodSubtypeSelect.appendChild(option);
+                    });
+                    prodSubtypeSelect.disabled = false;
+                } catch (error) {
+                    console.error('Error:', error);
+                    prodSubtypeSelect.innerHTML = '<option value="">Error loading</option>';
+                }
+            });
+        }
+
+        const form = document.getElementById('productCalcForm');
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = {
+                width: document.getElementById('prod_width').value,
+                height: document.getElementById('prod_height').value,
+                subtype_id: document.getElementById('prod_wood_subtype').value,
+                product_id: document.getElementById('prod_id').value
+            };
+
+            try {
+                const response = await fetch('/calculate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById('pr_base').textContent = `₹${data.base_price}`;
+                    document.getElementById('pr_wood').textContent = `₹${data.wood_cost}`;
+                    document.getElementById('pr_labor').textContent = `₹${data.labor_cost}`;
+                    document.getElementById('pr_total').textContent = `₹${data.total_cost}`;
+                    document.getElementById('prodResultBox').classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Calculation failed');
+            }
+        });
+    });
+</script>
+{% endblock %}
